@@ -86,4 +86,8 @@ public class Instrumento {
         return clave;
     }
 
+    //Método toString para mostrar con formato el instrumento.
+    public String toString() {
+        return autor + ":" + nombre + "," + clave + "," + utilidad + "," + tipo + "," + condicion + "," + cita + "\n";
+    }
 }
