@@ -1,0 +1,1 @@
+,1,,manejar,ansiedad,escala,false,Ingrese los autores separados por comas respectivamente

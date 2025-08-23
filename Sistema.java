@@ -31,20 +31,20 @@ public class Sistema extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JTabbedPane pestanas = new JTabbedPane();
-        pestanas.add("Agregar", panelAgregar());
-        pestanas.add("Consultar", panelConsultar());
-        pestanas.add("Eliminar",panelEliminar());
-        pestanas.add("Salir", panelSalir());
+        JTabbedPane pestañas = new JTabbedPane();
+        pestañas.add("Agregar", panelAgregar());
+        pestañas.add("Consultar", panelConsultar());
+        pestañas.add("Eliminar",panelEliminar());
+        pestañas.add("Salir", panelSalir());
 
-        add(pestanas, BorderLayout.CENTER);
+        add(pestañas, BorderLayout.CENTER);
 
     }
 
 
     //Metodo para configurar y mostrar el panel de agregar.
     private JPanel panelAgregar(){
-        JPanel panel = new JPanel(new GridLayout(9,2,10,10));
+        JPanel panel = new JPanel(new GridLayout(8,2,10,10));
         panel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
         nombreTxt = new JTextField();
@@ -61,8 +61,6 @@ public class Sistema extends JFrame {
         panel.add(nombreTxt);
         panel.add(new JLabel("Cita:"));
         panel.add(citaTxt);
-        panel.add(new JLabel("Clave:"));
-        panel.add(claveTxt);
         panel.add(new JLabel("Utilidad:"));
         panel.add(utilidadOpc);
         panel.add(new JLabel("Condición:"));
@@ -76,6 +74,7 @@ public class Sistema extends JFrame {
         panel.add(new JLabel("Agregar"));
         panel.add(botonAgregar);
 
+        botonAgregar.addActionListener(e -> agregarInstrumento());
         return panel;
     }
 
@@ -102,6 +101,8 @@ public class Sistema extends JFrame {
 
         panel.add(opciones, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
+
+        botonConsultar.addActionListener(e -> consultar());
         return panel;
     }
 
@@ -116,7 +117,7 @@ public class Sistema extends JFrame {
         panel.add(new JLabel("Clave del instrumento:"));
         panel.add(claveAEliminarTxt);
         panel.add(botonEliminar);
-
+        botonEliminar.addActionListener(e -> eliminarInstrumento());
         return panel;
     }
 
@@ -124,8 +125,88 @@ public class Sistema extends JFrame {
     private JPanel panelSalir() {
         JPanel panel = new JPanel(new FlowLayout());
         JButton botonSalir = new JButton("Salir del sistema");
+        botonSalir.addActionListener(e -> System.exit(0));
         panel.add(botonSalir);
         return panel;
     }
+
+    //Método que sirve para poder agregar un instrumento, recuperando el valor que fue ingresado por el usuario en
+    //los diferentes cuadros de texto, y a su vez creando el objeto Instrumento para después ser dado de alta en el programa.
+    private void agregarInstrumento() {
+        String nombre = nombreTxt.getText().toLowerCase();
+        String cita = citaTxt.getText().toLowerCase();
+        String utilidad = utilidadOpc.getSelectedItem().toString().toLowerCase();
+        String condicion = condicionOpc.getSelectedItem().toString().toLowerCase();
+        String tipo = tipoOpc.getSelectedItem().toString().toLowerCase();
+        ArrayList<String> autores = new ArrayList<>();
+        for (String autor : autoresTxt.getText().split(",")) {
+            autores.add(autor.trim());
+        }
+        boolean confiabilidad = confiableOpc.isSelected();
+
+        Instrumento instrumento = new Instrumento(nombre,autores, utilidad, tipo, condicion, cita,0, confiabilidad);
+        control.altas(instrumento);
+        JOptionPane.showMessageDialog(this,"Instrumento agregado");
+    }
+
+    //Método que sirve para eliminar el instrumento dependiendo de la clave que el usuario ingrese, este método se encarga
+    //de buscar coincidencias en el Array de instrumentos hasta encontrar la clave, si no fue así muestra un mensaje.
+    private void eliminarInstrumento() {
+        try {
+            int clave = Integer.parseInt(claveAEliminarTxt.getText());
+            Instrumento instrumento = control.buscarPorClave(clave);
+            if (instrumento != null) {
+                control.eliminarInstrumento(instrumento);
+                JOptionPane.showMessageDialog(this,"Instrumento eliminado");
+            } else {
+                JOptionPane.showMessageDialog(this,"No existe un instrumento con esa clave");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,"Ingrese un número válido");
+        }
+    }
+
+
+    //Método para buscar según el tipo de consulta ingresado por el usuario, dependiendo del tipo de consulta
+    //ingresará a un case diferente, llamando a diversos métodos que sirven para hacer la consulta respectivamente.
+    private void consultar() {
+        String tipoConsulta = consultasOpc.getSelectedItem().toString();
+        String mensaje = "";
+        switch (tipoConsulta) {
+            case "Por condición":
+                mensaje = control.consultarPorCondicion(busquedaTxt.getText());
+                break;
+            case "Por tipo":
+                mensaje = control.consultarPorTipo(busquedaTxt.getText());
+                break;
+            case "Por utilidad":
+                mensaje = control.consultarPorUtilidad(busquedaTxt.getText());
+                break;
+            case "Por autor":
+                mensaje = control.consultarPorAutor(busquedaTxt.getText());
+                break;
+            case "Por clave":
+                try {
+                    int clave = Integer.parseInt(busquedaTxt.getText());
+                    mensaje = control.consultarPorClave(clave);
+                } catch (NumberFormatException ex) {
+                    mensaje = "Clave inválida";
+                }
+                break;
+            case "Ordenados por clave":
+                control.ordenarPorClave();
+                mensaje = control.consultarTodos();
+                break;
+            case "Ordenados por primer autor":
+                mensaje = control.consultarTodos();
+                break;
+        }
+        resultados.setText(mensaje);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Sistema().setVisible(true));
+    }
+
 
 }
