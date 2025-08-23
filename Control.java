@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Control {
 
@@ -96,6 +97,30 @@ public class Control {
             }
         }
         return mensaje;
+    }
+
+    public String consultarPorClave (int clave) {
+        String mensaje = "";
+        for (int i = 0; i < instrumentos.size(); i++) {
+            Instrumento instrumento = instrumentos.get(i);
+            if(instrumentos.get(i).getClave() == clave) {
+                mensaje += instrumento + "\n";
+            }
+        }
+        return mensaje;
+    }
+
+    public String consultarTodos(){
+        String mensaje = "";
+        for (int i = 0; i < instrumentos.size(); i++) {
+            Instrumento instrumento = instrumentos.get(i);
+            mensaje += instrumento + "\n";
+        }
+        return mensaje;
+    }
+
+    public void ordenarPorClave () {
+        instrumentos.sort(Comparator.comparingInt((Instrumento instrumento) -> instrumento.getClave()));
     }
 
     //Método getter para obtner el Array de instrumentos.

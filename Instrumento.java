@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+
 public class Instrumento {
 
     //Inicialización de las variables que se usarán en esta clase.
     private String nombre;
-    private String autor;
+    private ArrayList<String> autores;
     private String utilidad;
     private String tipo;
     private String condicion;
@@ -12,10 +14,10 @@ public class Instrumento {
     private int clave;
 
     //Se establece un constructor para la creacion del objeto de tipo instrumento, el cual será usado en otra clase.
-    public Instrumento(String nombre, String autor, String utilidad, String tipo, String condicion, String cita,
+    public Instrumento(String nombre, ArrayList<String> autores, String utilidad, String tipo, String condicion, String cita,
                        int clave, boolean confiabilidad, boolean validez) {
         this.nombre = nombre;
-        this.autor = autor;
+        this.autores = autores;
         this.utilidad = utilidad;
         this.tipo = tipo;
         this.condicion = condicion;
@@ -29,9 +31,6 @@ public class Instrumento {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-    public void setAutor(String autor) {
-        this.autor = autor;
     }
     public void setUtilidad(String utilidad) {
         this.utilidad = utilidad;
@@ -61,8 +60,8 @@ public class Instrumento {
     public String getNombre() {
         return nombre;
     }
-    public String getAutor() {
-        return autor;
+    public ArrayList<String> getAutor() {
+        return autores;
     }
     public String getUtilidad() {
         return utilidad;
@@ -88,6 +87,6 @@ public class Instrumento {
 
     //Método toString para mostrar con formato el instrumento.
     public String toString() {
-        return autor + ":" + nombre + "," + clave + "," + utilidad + "," + tipo + "," + condicion + "," + cita + "\n";
+        return  nombre + "," + clave + "," + utilidad + "," + tipo + "," + condicion + "," + cita + "\n";
     }
 }
